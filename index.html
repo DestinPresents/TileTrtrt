@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0a9fe9">
+<title>Tile Trails — Match • Explore • Adventure</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div class="background"><div class="cloud c1"></div><div class="cloud c2"></div><div class="island"></div><div class="plant p1">🌿</div><div class="plant p2">🌴</div></div>
+
+  <header class="topbar">
+    <div class="left-actions">
+      <button class="round-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+      <button class="round-btn" id="mapBtn" aria-label="Map">🗺</button>
+    </div>
+    <div class="header-right"><button class="account-btn" id="accountBtn"><span>👤</span><b id="accountLabel">LOGIN</b></button><div class="coin-pill"><span class="coin-icon">🪙</span><b id="coinCount">340</b><button id="shopTop">＋</button></div></div>
+  </header>
+
+  <section id="home" class="screen active">
+    <div class="mascot-wrap"><div class="mascot">🐣</div><span class="spark s1">✦</span><span class="spark s2">✦</span></div>
+    <div class="brand"><div class="brand-main">TILE</div><div class="brand-ribbon">TRAILS</div><div class="brand-sub">MATCH • EXPLORE</div><div class="brand-level">3000 LEVELS</div></div>
+
+    <div class="streak-card"><span class="fire">🔥</span><div><strong>Daily Streak</strong><small id="streakText">3 days</small></div><button id="dailyBtn">🪙 CLAIM</button></div>
+
+    <div class="preview-card"><div class="preview-title"><span id="homeProgress">0/12</span><span>LEVEL <b id="homeLevel">21</b></span></div><div class="preview-grid" id="previewGrid"></div></div>
+
+    <button class="play-btn" id="playBtn"><span>LEVEL <b id="playLevel">21</b></span><small>▶ PLAY</small></button>
+
+    <div class="quick-actions"><button id="homeMap">🗺 MAP</button><button id="homeShop">🛒 SHOP</button><button id="eventBtn">🎪 EVENTS</button></div><div class="home-tip">✨ Complete levels, keep combos alive & collect milestone rewards.</div>
+  </section>
+
+  <section id="map" class="screen">
+    <div class="map-top"><button class="map-back" id="mapBackTop">← HOME</button><div class="page-title">Adventure Map</div><div class="map-spacer"></div></div>
+    <div class="map-path" id="mapPath"></div>
+    <button class="bottom-btn" id="mapHome">← BACK TO HOME</button>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="game-head">
+      <button class="small-back" id="gameHome">⌂<small>HOME</small></button>
+      <div class="game-progress"><b><span id="matched">0</span>/<span id="target">36</span></b><div><i id="progress"></i></div></div>
+      <div class="timer">⏱ <span id="time">60</span></div>
+    </div>
+    <div class="game-level">LEVEL <b id="gameLevel">21</b></div>
+    <div class="board-frame"><div class="board" id="board"></div></div>
+    <div class="tray-frame"><div class="tray" id="tray"></div></div>
+    <div class="powerups">
+      <button data-pu="undo" id="undo"><span>↩</span><small>UNDO</small><b>3</b></button>
+      <button data-pu="shuffle" id="shuffle"><span>🔀</span><small>SHUFFLE</small><b>3</b></button>
+      <button data-pu="hint" id="hint"><span>💡</span><small>AUTO SHOT</small><b>3</b></button>
+    </div>
+  </section>
+
+  <div class="modal hidden" id="authModal">
+    <div class="modal-card auth-card">
+      <button class="auth-close" id="authClose" aria-label="Close">×</button>
+      <div class="auth-brand">🐣 <span>TILE TRAILS</span></div>
+      <div id="authSignedOut">
+        <div class="auth-tabs"><span>ACCOUNT LOGIN</span></div>
+        <label>Email<input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <label>Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+        <button class="modal-action full" id="loginBtn">LOGIN</button>
+        <div class="auth-divider">NEW PLAYER</div>
+        <label>Email<input id="signupEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <label>Password<input id="signupPassword" type="password" autocomplete="new-password" placeholder="At least 6 characters"></label>
+        <button class="secondary-action full" id="signupBtn">CREATE ACCOUNT</button>
+        <div class="auth-divider">OR PHONE OTP</div>
+        <label>Phone number<input id="phoneNumber" type="tel" autocomplete="tel" placeholder="+91XXXXXXXXXX"></label>
+        <div id="recaptcha-container"></div>
+        <button class="secondary-action full" id="phoneSendBtn">SEND OTP</button>
+        <div class="auth-otp-row hidden" id="otpRow"><label>OTP<input id="otpCode" inputmode="numeric" maxlength="6" placeholder="6-digit code"></label><button class="modal-action" id="phoneVerifyBtn">VERIFY</button></div>
+      </div>
+      <div id="authSignedIn" class="hidden">
+        <div class="account-welcome">Welcome, <strong id="accountName">Player</strong></div>
+        <p id="verifyNote" class="verify-note"></p>
+        <button class="secondary-action full" id="resendBtn">RESEND VERIFICATION EMAIL</button>
+        <button class="danger-action full" id="logoutBtn">LOG OUT</button>
+      </div>
+      <div id="authStatus" class="auth-status"></div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modal"><div class="modal-card"><div id="modalBody"></div></div></div>
+</div>
+<audio id="bgMusic" preload="auto" loop src="trails.mp3"></audio>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="recaptcha-config.js"></script>
+<script src="firebase-auth.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
