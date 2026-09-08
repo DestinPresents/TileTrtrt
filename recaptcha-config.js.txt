@@ -1,0 +1,1 @@
+const RECAPTCHA_SITE_KEY = "6Le9xa4tAAAAAPdjtovW2H6uYzBTdejXOgDG4Q6k";
